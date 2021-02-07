@@ -9,4 +9,11 @@
   h2 {
     @apply text-xl;
   }
+  button {
+    @apply text-sm;
+    @apply border;
+    @apply rounded;
+    @apply p-1;
+    @apply m-1;
+  }
 }

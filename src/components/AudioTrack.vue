@@ -9,7 +9,7 @@ div.border.m-4.text-left
   div(v-if="!collapsed")
     div.p-2
       label Playback Speed
-      VueSlider(v-model="playbackSpeed", min=0, max=7, interval=0.1)
+      VueSlider(v-model="playbackSpeed", min=0, max=7, interval=0.001)
     div.p-2
       label Pan
       VueSlider(v-model="panLocation", min=-1, max=1, interval=0.1)
@@ -21,7 +21,9 @@ div.border.m-4.text-left
       VueSlider(v-model="predelay", min=0, max=5, interval=0.1)
     div.p-2
       label Playback Locators
-      VueSlider(v-model="locator", min=0, max=1, interval=0.01)
+      VueSlider(v-model="locator", min=0, max=1, interval=0.0001)
+      p Duration: {{ ( duration * 100 | round ) / 100 }}
+      p Normalized Duration: {{ ( duration * 100 / playbackSpeed | round ) / 100 }}
     div.p-2
       label Looped
       input.m-2(type="checkbox" v-model="loop")  

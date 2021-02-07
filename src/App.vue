@@ -1,22 +1,28 @@
 <template>
-  <Visualizer />
+  <Main />
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import Visualizer from "./components/Visualizer.vue";
+import Main from "./components/Main.vue";
 
 @Options({
   components: {
-    Visualizer
+    Main
   }
 })
 export default class App extends Vue {}
 </script>
 
 <style lang="scss">
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  h1,h2 {
+    font-family: 'Fredoka One', Helvetica, Arial, sans-serif;
+  }
+  font-family:  Lato, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
