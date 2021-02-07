@@ -3,22 +3,12 @@ div
   h1 Aint No Scrub
   canvas.w-screen.h-auto(ref="visualizer")
   button.border.rounded.p-1(:disabled="!loaded", @click="onPlay") {{ buttonText }}
+  button.border.rounded.p-1(@click="onTrackAdd") Add Audio Track
+
   AudioTrack(
-    :audioContext="audioContext",
-    :audioBuffer="rawBuffer",
-    :playing="playing"
-  )
-  AudioTrack(
-    :audioContext="audioContext",
-    :audioBuffer="rawBuffer",
-    :playing="playing"
-  )
-  AudioTrack(
-    :audioContext="audioContext",
-    :audioBuffer="rawBuffer",
-    :playing="playing"
-  )
-  AudioTrack(
+    v-for="trackIndex in trackCount"
+    :key="trackIndex"
+    :trackNumber="trackIndex"
     :audioContext="audioContext",
     :audioBuffer="rawBuffer",
     :playing="playing"
@@ -41,7 +31,7 @@ import { Watch } from "vue-property-decorator";
 })
 export default class Visulizer extends Vue {
   audioContext = new AudioContext();
-  audioTracks = [new Audio(), new Audio()];
+  trackCount = 1;
   currentTimes = [0, 0];
   analyzer = this.audioContext.createAnalyser();
 
@@ -98,6 +88,10 @@ export default class Visulizer extends Vue {
     if (this.audioContext.state === "suspended") {
       this.audioContext.resume();
     }
+  }
+
+  onTrackAdd() {
+    this.trackCount += 1
   }
 
   createInvisibleNode() {
