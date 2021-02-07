@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Spectrogram</title>
+        <style type="text/css">
+            .visualizer {
+                display: block;
+                background-color: black;
+            }
+        </style>
+    </head>
+    <body>
+
+        <canvas class="visualizer" width="800" height="512"></canvas>
+        <canvas class="wavelet" width="800" height="512"></canvas>
+        <script type="text/javascript" src="bower_components/dat-gui/build/dat.gui.min.js"></script>
+        <script type="text/javascript" src="bower_components/chroma-js/chroma.js"></script>
+        <script type="text/javascript">
+
+            var canvas = document.querySelector('.visualizer');
+            var canvasCtx = canvas.getContext("2d");
+
+            var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+            var javascriptNode = audioCtx.createScriptProcessor(2048, 1, 1);
+            javascriptNode.connect(audioCtx.destination);
+
+            var analyser = audioCtx.createAnalyser();
+            // analyser.minDecibels = -90;
+            // analyser.maxDecibels = -10;
+            // analyser.smoothingTimeConstant = 0.85;
+            analyser.smoothingTimeConstant = 0;
+            analyser.fftSize = 1024;
+            analyser.connect(javascriptNode);
+
+            var source = audioCtx.createBufferSource();
+            source.connect(analyser);
+            source.connect(audioCtx.destination);
+
+            track = 'blofeld.mp3'
+
+            var request = new XMLHttpRequest();
+            request.open('get', track, true);
+            request.responseType = 'arraybuffer';
+            request.onload = function () {
+                audioCtx.decodeAudioData(request.response, function (buffer) {
+                    source.buffer = buffer;
+                    source.start(0);
+                });
+            };
+            request.send();
+
+
+            javascriptNode.onaudioprocess = function () {
+                var array = new Uint8Array(analyser.frequencyBinCount);
+                analyser.getByteFrequencyData(array);
+                drawSpectrogram(array);
+            };
+
+            var tempCanvas = document.createElement("canvas"),
+                tempCtx = tempCanvas.getContext("2d");
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = canvas.height;
+
+            var getColor = chroma.scale(['#000000', '#ff0000', '#ffff00', '#ffffff'], [0, .25, .75, 1]).domain([0, 300]);
+
+            function drawSpectrogram (array) {
+                // copy the current canvas onto the temp canvas
+                tempCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height);
+
+                for(var i = 0; i < array.length; i++) {
+                    // var magnitude = Math.log(Math.abs(array[i])+1);
+                    // canvasCtx.fillStyle = 'rgb(' + Math.round(magnitude*40) + ', ' + Math.round(magnitude*5) + ', 0)';
+                    canvasCtx.fillStyle = getColor(array[i]).hex();
+                    canvasCtx.fillRect(canvas.width - 1, canvas.height - i, 1, 1);
+                }
+
+                // var landmarks = getLandmarks(array);
+                // for (var i = 0; i < landmarks.length; i++) {
+                //  canvasCtx.fillStyle = 'rgb(100, 200, 255)';
+                //  canvasCtx.fillRect(canvas.width - 1, canvas.height - landmarks[i], 1, 1);
+                // };
+
+                // set translate on the canvas
+                canvasCtx.translate(-1, 0);
+                // draw the copied image
+                canvasCtx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+
+                // reset the transformation matrix
+                canvasCtx.setTransform(1, 0, 0, 1, 0, 0);
+            }
+
+
+            function getLandmarks (array) {
+                var recordPoints = [0,0,0,0,0];
+                var highscores = [0,0,0,0,0];
+                for(var i = 0; i < array.length; i++) {
+                    var magnitude = Math.log(Math.abs(array[i]) + 1);
+                    var index = getIndex(array[i]);
+                    if (magnitude > highscores[index]) {
+                        highscores[index] = magnitude;
+                        recordPoints[index] = array[i];
+                    }
+                }
+                return recordPoints;
+            }
+
+            var RANGE = [40,80,120,180,300];
+
+            function getIndex (value) {
+                var i = 0;
+                while(RANGE[i] < value) i++;
+                return i;
+            }
+
+
+            var gui = new dat.GUI();
+
+            var f1 = gui.addFolder('Analyser');
+            f1.open();
+            f1.add(analyser, 'minDecibels', -100, 0);
+            f1.add(analyser, 'maxDecibels', -100, 0);
+            f1.add(analyser, 'smoothingTimeConstant', 0, 1).step(0.01);
+            f1.add(analyser, 'fftSize', [32,64,128,256,512,1024,2048]);
+
+        </script>
+
+    </body>
+</html>
