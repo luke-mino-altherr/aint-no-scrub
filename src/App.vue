@@ -1,5 +1,6 @@
-<template>
-  <Main />
+<template lang="pug">
+div.relative.bg-gray-300.font-sans
+  Main()
 </template>
 
 <script lang="ts">
@@ -19,14 +20,13 @@ export default class App extends Vue {}
 @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
 
 #app {
-  h1,h2 {
+/*   h1,h2 {
     font-family: 'Fredoka One', Helvetica, Arial, sans-serif;
   }
   font-family:  Lato, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  color: #2c3e50; */
 }
 </style>

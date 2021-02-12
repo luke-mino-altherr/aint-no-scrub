@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-  canvas.w-screen.h-auto.border(ref="visualiser")
+  canvas.w-screen(ref="visualiser")
 </template>
 
 
@@ -70,7 +70,7 @@ export default class Visualiser extends Vue {
       isEven: boolean
     ) => {
       ctx.lineWidth = 2; // how thick the line is
-      ctx.strokeStyle = "#555"; // what color our line is
+      ctx.strokeStyle = "#000"; // what color our line is
       ctx.beginPath();
       height = isEven ? height : -height;
       ctx.moveTo(x, 0);

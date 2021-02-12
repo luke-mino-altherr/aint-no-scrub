@@ -1,31 +1,37 @@
 <template lang="pug">
-div
-  h1.pb-4 Aint No Scrub
-  div.border
-    Visualiser(
-      :audioContext="audioContext",
-      :audioBuffer="rawBuffer",
-      :playing="playing"
-      :loaded="loaded"
-    )
-  div.border.m-2
-    h2.pb-2.mt-4 Global Transport
-    div
-      p.text-sm File Duration: {{ duration }}
-      p.text-sm Sample Length: {{ sampleDuration }}
-      p.text-sm Sample Rate: {{ sampleRate }}
-      button.border.rounded.p-1(:disabled="!loaded", @click="onPlay") {{ buttonText }}
-  div.border.m-2
-    h2.pb-2.mt-4 Mixer
-    div
-      button(@click="onTrackAdd") Add Audio Track
-      AudioTrack(
-        v-for="trackIndex in trackCount"
-        :key="trackIndex"
-        :trackNumber="trackIndex"
+div.h-screen
+  div(v-if="!loaded")
+    p Loading...
+  div(v-else)
+    div.container
+      h1.pt-10.pb-4.pl-4 Aint No Scrub
+      div
+        Visualiser(
+          :audioContext="audioContext",
+          :audioBuffer="rawBuffer",
+          :playing="playing"
+          :loaded="loaded"
+        )
+      div.p-4.text-center
+        h2.pb-2.mt-4 Mixer
+        div
+          button(@click="onTrackAdd") Add Audio Track
+          AudioTrack(
+            v-for="trackIndex in trackCount"
+            :key="trackIndex"
+            :color="colorMap[trackIndex%5]"
+            :trackNumber="trackIndex"
+            :audioContext="audioContext",
+            :audioBuffer="rawBuffer",
+            :playing="playing"
+          )
+    div.m-0.w-screen.fixed.bottom-0.z-100.object-bottom
+      Transport(
         :audioContext="audioContext",
         :audioBuffer="rawBuffer",
         :playing="playing"
+        :loaded="loaded"
+        @onPlay="onPlay"
       )
 </template>
 
@@ -35,7 +41,8 @@ import { Options, Vue } from "vue-class-component";
 import { spectrogram } from "spectrogram";
 import { CanvasHTMLAttributes } from "vue";
 import AudioTrack from "./AudioTrack.vue";
-import Visualiser from "./Visualiser.vue"
+import Visualiser from "./Visualiser.vue";
+import Transport from "./Transport.vue";
 import { Watch } from "vue-property-decorator";
 
 @Options({
@@ -43,6 +50,7 @@ import { Watch } from "vue-property-decorator";
   components: {
     AudioTrack,
     Visualiser,
+    Transport
   },
 })
 export default class Main extends Vue {
@@ -55,21 +63,24 @@ export default class Main extends Vue {
   playing = false;
   loaded = false;
 
-  get buttonText() {
-    return this.playing ? "Pause" : "Play";
-  }
+  colorMap2 = [
+    "#D4CDFF",
+    "#CEE3FF",
+    "#C9FFD9",
+    "#FFFECB",
+    "#FFCED0",
+    "#FFBAE4",
+  ]
 
-  get duration() {
-    return this.loaded ? this.rawBuffer.duration : 0;
-  }
+  colorMap = [
+    "#F400FF",
+    "#6F00EF",
+    "#007FFF",
+    "#77FB00",
+    "#FEFF00",
+    "#FAAB00",
+  ]
 
-  get sampleDuration() {
-    return this.loaded ? this.rawBuffer.length : 0;
-  }
-
-  get sampleRate() {
-    return this.loaded ? this.rawBuffer.sampleRate : 0;
-  }
 
   mounted() {
     const request = new XMLHttpRequest();
@@ -82,7 +93,7 @@ export default class Main extends Vue {
         (buffer) => {
           this.rawBuffer = buffer;
           this.loaded = true;
-              console.log(this.rawBuffer);
+          console.log(this.rawBuffer);
         },
         null
       );
@@ -92,6 +103,7 @@ export default class Main extends Vue {
   }
 
   onPlay() {
+    console.log("hey")
     this.playing = this.playing ? false : true;
   }
 
@@ -100,3 +112,8 @@ export default class Main extends Vue {
   }
 }
 </script>
+<style lang="scss" scoped>
+.container {
+  padding-bottom: 150px;
+}
+</style>

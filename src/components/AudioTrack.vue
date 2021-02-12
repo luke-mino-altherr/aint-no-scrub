@@ -1,5 +1,5 @@
 <template lang="pug">
-div.border.m-4.text-left
+div.p-4.text-left
   div.p-2.text-align-left
     a(@click="collapsed = !collapsed")
       h2.inline(v-if="!collapsed") &#x25BE; Track {{ trackNumber }}
@@ -40,6 +40,7 @@ import "vue-slider-component/theme/default.css";
     audioContext: AudioContext,
     audioBuffer: AudioBuffer,
     playing: Boolean,
+    color: String,
   },
   components: {
     VueSlider,
@@ -50,6 +51,7 @@ export default class AudioTrack extends Vue {
   audioBuffer!: AudioBuffer;
   playing!: boolean;
   trackNumber!: number;
+  color!: string;
 
   collapsed = true;
   enabled = true;
@@ -76,6 +78,13 @@ export default class AudioTrack extends Vue {
 
   get duration() {
     return this.playbackEnd - this.playbackStart;
+  }
+
+  get colorStyle() {
+    return { 
+      backgroundColor: this.color, 
+      //opacity: "30%"
+    }
   }
 
   @Watch("playing")
@@ -138,5 +147,8 @@ export default class AudioTrack extends Vue {
   }
 }
 </script>
-<style lang="">
+<style lang="scss">
+.vue-slider {
+  z-index: 0;
+}
 </style>
