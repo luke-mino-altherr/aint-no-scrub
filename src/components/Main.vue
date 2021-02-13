@@ -24,9 +24,10 @@ div.h-screen
               :audioContext="audioContext",
               :audioBuffer="rawBuffer",
               :playing="playing"
+              :stop="stop"
             )
         .flex.m-3
-          button.w-full.uppercase.animate-pulse.bg-gray-100.pl-4.font-semibold.text-center(@click="onTrackAdd") Add Audio Track
+          button.w-full.uppercase.bg-gray-100.pl-4.font-semibold.text-center(@click="onTrackAdd" class="hover:bg-gray-300 hover:border-gray-300") Add Audio Track
     div.m-0.w-screen.fixed.bottom-0.z-100.object-bottom
       Transport(
         :audioContext="audioContext",
@@ -34,6 +35,7 @@ div.h-screen
         :playing="playing"
         :loaded="loaded"
         @onPlay="onPlay"
+        @onStop="onStop"
       )
 </template>
 
@@ -63,6 +65,7 @@ export default class Main extends Vue {
   url =
     "https://f002.backblazeb2.com/file/mino-altherr-public/blog/audio/sailure-to-sun.mp3";
   playing = false;
+  stop = 0;
   loaded = false;
 
   colorMap2 = [
@@ -105,8 +108,12 @@ export default class Main extends Vue {
   }
 
   onPlay() {
-    console.log("hey")
     this.playing = this.playing ? false : true;
+  }
+
+  onStop() {
+    this.playing = false;
+    this.stop += 1;
   }
 
   onTrackAdd() {

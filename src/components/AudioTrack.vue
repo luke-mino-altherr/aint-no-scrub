@@ -12,7 +12,9 @@ div.m-4.text-left.border.rounded.bg-gray-200
         fa(icon="power-off" class="power-off")
     h2.inline Track {{ trackNumber }}
     .pl-4
-      button.h-6.w-6(@click="trigger")
+      button.h-6.w-6(v-if="!previewPlaying" @click="trigger" :disabled="!enabled" class="disabled:opacity-50" )
+        fa(icon="volume-up" class="volume-up" class="hover:text-gray-600")
+      button.h-6.w-6.animate-pulse(v-if="previewPlaying" @click="trigger" :disabled="!enabled" class="disabled:opacity-50")
         fa(icon="volume-up" class="volume-up" class="hover:text-gray-600")
   div(v-if="!collapsed")
     div.p-2
@@ -48,6 +50,7 @@ import "vue-slider-component/theme/default.css";
     audioContext: AudioContext,
     audioBuffer: AudioBuffer,
     playing: Boolean,
+    stop: Number,
     color: String,
   },
   components: {
@@ -68,6 +71,7 @@ export default class AudioTrack extends Vue {
   panNode!: StereoPannerNode;
   gainNode!: GainNode;
 
+  previewPlaying = false;
   locator = [0, 1];
   endLocation!: number;
   loop!: boolean;
@@ -97,11 +101,20 @@ export default class AudioTrack extends Vue {
 
   @Watch("playing")
   onPlayStateChange() {
+    console.log("CHANGE", this.playing)
     if (!this.playing) {
       if (this.bufferSourceNode) this.bufferSourceNode.stop(0);
+      this.previewPlaying = false;
     } else if (this.playing && this.enabled) {
       this.trigger();
     }
+  }
+
+  @Watch("stop")
+  onStopChange() {
+    console.log("CHANGE", this.playing)
+    if (this.bufferSourceNode) this.bufferSourceNode.stop(0);
+    this.previewPlaying = false;
   }
 
   initializeDevice() {
@@ -117,7 +130,7 @@ export default class AudioTrack extends Vue {
       this.gainNode = this.audioContext.createGain();
       this.setGain();
 
-      this.bufferSourceNode.connect(this.panNode); 
+      this.bufferSourceNode.connect(this.panNode);
       this.panNode.connect(this.gainNode)
       this.gainNode.connect(this.audioContext.destination)
 
@@ -127,6 +140,7 @@ export default class AudioTrack extends Vue {
   trigger() {
     if (this.bufferSourceNode) this.bufferSourceNode.stop(0)
     this.initializeDevice()
+    this.previewPlaying = true;
   }
 
   @Watch("playbackSpeed")
