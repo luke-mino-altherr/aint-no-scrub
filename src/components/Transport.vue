@@ -1,9 +1,11 @@
 <template lang="pug">
 div.border.bg-opacity-100.bg-gray-700.transport.p-4
-  div.flex-list.align-middle
-    ul
-      li   
-        button.border.rounded.p-1(:disabled="!loaded", @click="onPlay") {{ buttonText }}
+  div.flex.align-middle
+    .flex-1.flex.items-center
+      button.border.rounded-full.h-14.w-14.text-xl(v-if="!this.playing" :disabled="!loaded", @click="onPlay" class="hover:text-gray-400 hover:border-gray-400") &#x25b6;
+      button.border.rounded-full.h-14.w-14.text-xl.text-green-300.border-green-300.animate-pulse(v-if="this.playing" :disabled="!loaded", @click="onPlay" class="hover:text-green-400 hover:border-green-400") &#x25b6;
+
+    ul.flex-initial
       li 
         b File Duration: 
         p {{ duration }}
@@ -35,7 +37,7 @@ export default class Transport extends Vue {
   loaded = false;
 
   get buttonText() {
-    return this.playing ? "Pause" : "Play";
+    return this.playing ? "Pause" : "&#x25B6;";
   }
 
   get duration() {
@@ -67,15 +69,18 @@ export default class Transport extends Vue {
     vertical-align: middle;
 }
 .flex-list ul {
-    display: flex;
-    flex-direction: row;
+/*     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: space-between; */
     margin-left: -1px;
 }
 .flex-list li {
-    flex-grow: 1;
-    flex-basis: auto;
-    text-align: right;
+/*     flex-basis: auto; */
+   text-align: right;
+}
+.flex-item {
+  display: flex;
+  flex-direction: row
 }
 </style>

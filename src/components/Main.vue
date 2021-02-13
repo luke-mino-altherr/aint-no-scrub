@@ -3,8 +3,8 @@ div.h-screen
   div(v-if="!loaded")
     p Loading...
   div(v-else)
-    div.container
-      h1.pt-10.pb-4.pl-4 Aint No Scrub
+    div.main
+      h1.pt-8.pb-10.pr-4.text-xxxxl.text-right (Ain't No) Scrub
       div
         Visualiser(
           :audioContext="audioContext",
@@ -12,19 +12,21 @@ div.h-screen
           :playing="playing"
           :loaded="loaded"
         )
-      div.p-4.text-center
-        h2.pb-2.mt-4 Mixer
+      div.m-4.text-center.rounded.border.bg-gray-500
+        h2.p-4.text-xxl.text-gray-300.text-left Mixer
         div
-          button(@click="onTrackAdd") Add Audio Track
-          AudioTrack(
-            v-for="trackIndex in trackCount"
-            :key="trackIndex"
-            :color="colorMap[trackIndex%5]"
-            :trackNumber="trackIndex"
-            :audioContext="audioContext",
-            :audioBuffer="rawBuffer",
-            :playing="playing"
-          )
+          .pt-4
+            AudioTrack(
+              v-for="trackIndex in trackCount"
+              :key="trackIndex"
+              :color="colorMap[trackIndex%5]"
+              :trackNumber="trackIndex"
+              :audioContext="audioContext",
+              :audioBuffer="rawBuffer",
+              :playing="playing"
+            )
+        .flex.m-3
+          button.w-full.uppercase.animate-pulse.bg-gray-100.pl-4.font-semibold.text-center(@click="onTrackAdd") Add Audio Track
     div.m-0.w-screen.fixed.bottom-0.z-100.object-bottom
       Transport(
         :audioContext="audioContext",
@@ -113,7 +115,7 @@ export default class Main extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-.container {
+.main {
   padding-bottom: 150px;
 }
 </style>

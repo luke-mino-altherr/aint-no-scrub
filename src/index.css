@@ -4,6 +4,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Mukta:wght@500&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 @layer base {
   h1 {
@@ -15,6 +16,11 @@
     @apply text-xl;
     @apply font-header;
     @apply uppercase;
+  }
+  label {
+    @apply font-body;
+    @apply uppercase;
+    @apply text-sm;
   }
   .transport {
     @apply text-xs;

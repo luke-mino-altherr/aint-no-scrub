@@ -1,11 +1,19 @@
 <template lang="pug">
-div.p-4.text-left
-  div.p-2.text-align-left
-    a(@click="collapsed = !collapsed")
-      h2.inline(v-if="!collapsed") &#x25BE; Track {{ trackNumber }}
-      h2.inline(v-else) &#x25B8; Track {{ trackNumber }}
-    input.m-2(type="checkbox" v-model="enabled")
-    button(@click="trigger") Trigger
+div.m-4.text-left.border.rounded.bg-gray-200
+  div.p-2.text-align-left.align-middle.items-center.flex
+    .p-1.flex.flex-0
+      a(@click="collapsed = !collapsed")
+        h2.inline(v-if="!collapsed") &#x25BE;
+        h2.inline(v-else) &#x25B8;
+    .p-1.flex.flex-0
+      button.border.rounded-full.h-5.w-5.text-xs.inline.text-green-500.border-green-500(v-if="enabled" class="hover:text-green-600 hover:border-green-600" @click="enabled = !enabled")
+        fa(icon="power-off" class="power-off")
+      button.border.rounded-full.h-5.w-5.text-xs.inline.text-red-500.border-red-500(v-if="!enabled" class="hover:text-red-600 hover:border-red-600" @click="enabled = !enabled")
+        fa(icon="power-off" class="power-off")
+    h2.inline Track {{ trackNumber }}
+    .pl-4
+      button.h-6.w-6(@click="trigger")
+        fa(icon="volume-up" class="volume-up" class="hover:text-gray-600")
   div(v-if="!collapsed")
     div.p-2
       label Playback Speed
@@ -15,18 +23,18 @@ div.p-4.text-left
       VueSlider(v-model="panLocation", min=-1, max=1, interval=0.1)
     div.p-2
       label Volume
-      VueSlider(v-model="gain", min=0, max=1, interval=0.1)          
+      VueSlider(v-model="gain", min=0, max=1, interval=0.1)
     div.p-2
       label Predelay (s)
       VueSlider(v-model="predelay", min=0, max=5, interval=0.1)
     div.p-2
       label Playback Locators
       VueSlider(v-model="locator", min=0, max=1, interval=0.0001)
-      p Duration: {{ ( duration * 100 | round ) / 100 }}
-      p Normalized Duration: {{ ( duration * 100 / playbackSpeed | round ) / 100 }}
+      label Duration: {{ ( duration * 100 | round ) / 100 }}
+      label ; Normalized Duration: {{ ( duration * 100 / playbackSpeed | round ) / 100 }}
     div.p-2
       label Looped
-      input.m-2(type="checkbox" v-model="loop")  
+      input.m-2(type="checkbox" v-model="loop")
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";

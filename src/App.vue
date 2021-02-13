@@ -18,7 +18,8 @@ export default class App extends Vue {}
 <style lang="scss">
 @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Staatliches&display=swap');
 #app {
 /*   h1,h2 {
     font-family: 'Fredoka One', Helvetica, Arial, sans-serif;
