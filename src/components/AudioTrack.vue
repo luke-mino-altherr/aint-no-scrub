@@ -1,42 +1,60 @@
 <template lang="pug">
-div.m-4.text-left.border.rounded.bg-gray-200
-  div.p-2.text-align-left.align-middle.items-center.flex
+.m-4.text-left.border.rounded.bg-gray-200
+  .p-2.text-align-left.align-middle.items-center.flex
     .p-1.flex.flex-0
       a(@click="collapsed = !collapsed")
         h2.inline(v-if="!collapsed") &#x25BE;
         h2.inline(v-else) &#x25B8;
     .p-1.flex.flex-0
-      button.border.rounded-full.h-5.w-5.text-xs.inline.text-green-500.border-green-500(v-if="enabled" class="hover:text-green-600 hover:border-green-600" @click="enabled = !enabled")
-        fa(icon="power-off" class="power-off")
-      button.border.rounded-full.h-5.w-5.text-xs.inline.text-red-500.border-red-500(v-if="!enabled" class="hover:text-red-600 hover:border-red-600" @click="enabled = !enabled")
-        fa(icon="power-off" class="power-off")
+      button.border.rounded-full.h-5.w-5.text-xs.inline.text-green-500.border-green-500(
+        v-if="enabled",
+        class="hover:text-green-600 hover:border-green-600",
+        @click="onPowerOff"
+      )
+        fa.power-off(icon="power-off")
+      button.border.rounded-full.h-5.w-5.text-xs.inline.text-red-500.border-red-500(
+        v-if="!enabled",
+        class="hover:text-red-600 hover:border-red-600",
+        @click="onPowerOff"
+      )
+        fa.power-off(icon="power-off")
     h2.inline Track {{ trackNumber }}
     .pl-4
-      button.h-6.w-6(v-if="!previewPlaying" @click="trigger" :disabled="!enabled" class="disabled:opacity-50" )
-        fa(icon="volume-up" class="volume-up" class="hover:text-gray-600")
-      button.h-6.w-6.animate-pulse(v-if="previewPlaying" @click="trigger" :disabled="!enabled" class="disabled:opacity-50")
-        fa(icon="volume-up" class="volume-up" class="hover:text-gray-600")
+      button.h-6.w-6(
+        v-if="!previewPlaying",
+        @click="trigger",
+        :disabled="!enabled",
+        class="disabled:opacity-50"
+      )
+        fa.volume-up(icon="volume-up", class="hover:text-gray-600")
+      button.h-6.w-6.animate-pulse(
+        v-if="previewPlaying",
+        @click="trigger",
+        :disabled="!enabled",
+        class="disabled:opacity-50"
+      )
+        fa.volume-up(icon="volume-up", class="hover:text-gray-600")
   div(v-if="!collapsed")
-    div.p-2
+    .p-2
       label Playback Speed
-      VueSlider(v-model="playbackSpeed", min=0, max=7, interval=0.001)
-    div.p-2
+      VueSlider(v-model="playbackSpeed", min=0, max=10, interval=0.001)
+    .p-2
       label Pan
       VueSlider(v-model="panLocation", min=-1, max=1, interval=0.1)
-    div.p-2
+    .p-2
       label Volume
       VueSlider(v-model="gain", min=0, max=1, interval=0.1)
-    div.p-2
+    .p-2.hidden
       label Predelay (s)
       VueSlider(v-model="predelay", min=0, max=5, interval=0.1)
-    div.p-2
+    .p-2
       label Playback Locators
       VueSlider(v-model="locator", min=0, max=1, interval=0.0001)
-      label Duration: {{ ( duration * 100 | round ) / 100 }}
-      label ; Normalized Duration: {{ ( duration * 100 / playbackSpeed | round ) / 100 }}
-    div.p-2
+      label Duration: {{ ((duration * 100) | round) / 100 }}
+      label ; Normalized Duration: {{ (((duration * 100) / playbackSpeed) | round) / 100 }}
+    .p-2
       label Looped
-      input.m-2(type="checkbox" v-model="loop")
+      input.m-2(type="checkbox", v-model="loop")
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -51,11 +69,11 @@ import "vue-slider-component/theme/default.css";
     audioBuffer: AudioBuffer,
     playing: Boolean,
     stop: Number,
-    color: String,
+    color: String
   },
   components: {
-    VueSlider,
-  },
+    VueSlider
+  }
 })
 export default class AudioTrack extends Vue {
   audioContext!: AudioContext;
@@ -74,7 +92,7 @@ export default class AudioTrack extends Vue {
   previewPlaying = false;
   locator = [0, 1];
   endLocation!: number;
-  loop!: boolean;
+  loop = true;
   predelay = 0;
   playbackSpeed = 1;
   panLocation = 0;
@@ -93,15 +111,14 @@ export default class AudioTrack extends Vue {
   }
 
   get colorStyle() {
-    return { 
-      backgroundColor: this.color, 
+    return {
+      backgroundColor: this.color
       //opacity: "30%"
-    }
+    };
   }
 
   @Watch("playing")
   onPlayStateChange() {
-    console.log("CHANGE", this.playing)
     if (!this.playing) {
       if (this.bufferSourceNode) this.bufferSourceNode.stop(0);
       this.previewPlaying = false;
@@ -112,40 +129,49 @@ export default class AudioTrack extends Vue {
 
   @Watch("stop")
   onStopChange() {
-    console.log("CHANGE", this.playing)
     if (this.bufferSourceNode) this.bufferSourceNode.stop(0);
     this.previewPlaying = false;
   }
 
+  onPowerOff() {
+    console.log("HERE");
+    this.enabled = !this.enabled;
+    this.onStopChange();
+  }
+
   initializeDevice() {
-      this.bufferSourceNode = this.audioContext.createBufferSource();
-      this.bufferSourceNode.buffer = this.audioBuffer;
+    this.bufferSourceNode = this.audioContext.createBufferSource();
+    this.bufferSourceNode.buffer = this.audioBuffer;
 
-      this.setLoopLocation();
-      this.setPlaybackSpeed();
+    this.setLoopLocation();
+    this.setPlaybackSpeed();
 
-      this.panNode = this.audioContext.createStereoPanner();
-      this.setPanLocation();
+    this.panNode = this.audioContext.createStereoPanner();
+    this.setPanLocation();
 
-      this.gainNode = this.audioContext.createGain();
-      this.setGain();
+    this.gainNode = this.audioContext.createGain();
+    this.setGain();
 
-      this.bufferSourceNode.connect(this.panNode);
-      this.panNode.connect(this.gainNode)
-      this.gainNode.connect(this.audioContext.destination)
+    this.bufferSourceNode.connect(this.panNode);
+    this.panNode.connect(this.gainNode);
+    this.gainNode.connect(this.audioContext.destination);
 
-      this.bufferSourceNode.start(this.audioContext.currentTime + this.predelay, this.playbackStart);
+    this.bufferSourceNode.start(
+      this.audioContext.currentTime + this.predelay,
+      this.playbackStart
+    );
   }
 
   trigger() {
-    if (this.bufferSourceNode) this.bufferSourceNode.stop(0)
-    this.initializeDevice()
+    if (this.bufferSourceNode) this.bufferSourceNode.stop(0);
+    this.initializeDevice();
     this.previewPlaying = true;
   }
 
   @Watch("playbackSpeed")
   setPlaybackSpeed() {
-    if (this.bufferSourceNode) this.bufferSourceNode.playbackRate.value = this.playbackSpeed;
+    if (this.bufferSourceNode)
+      this.bufferSourceNode.playbackRate.value = this.playbackSpeed;
   }
 
   @Watch("panLocation")
@@ -165,7 +191,6 @@ export default class AudioTrack extends Vue {
       this.bufferSourceNode.loopEnd = this.playbackEnd;
       this.bufferSourceNode.loop = this.loop;
     }
-
   }
 }
 </script>

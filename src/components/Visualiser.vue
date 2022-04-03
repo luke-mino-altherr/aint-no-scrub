@@ -3,10 +3,8 @@ div
   canvas.w-screen(ref="visualiser")
 </template>
 
-
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { CanvasHTMLAttributes } from "vue";
 import { Watch } from "vue-property-decorator";
 
 @Options({
@@ -15,8 +13,8 @@ import { Watch } from "vue-property-decorator";
     audioContext: AudioContext,
     audioBuffer: AudioBuffer,
     playing: Boolean,
-    loaded: Boolean,
-  },
+    loaded: Boolean
+  }
 })
 export default class Visualiser extends Vue {
   audioContext!: AudioContext;
@@ -24,7 +22,7 @@ export default class Visualiser extends Vue {
   playing!: boolean;
   loaded = false;
 
-  numberSamples = 90;
+  numberSamples = 200;
 
   mounted() {
     if (this.loaded) this.drawWaveform();
@@ -56,7 +54,7 @@ export default class Visualiser extends Vue {
 
   get normalizedData() {
     const multiplier = Math.pow(Math.max(...this.filteredData), -1);
-    return this.filteredData.map((n) => n * multiplier);
+    return this.filteredData.map(n => n * multiplier);
   }
 
   @Watch("loaded")
@@ -82,7 +80,7 @@ export default class Visualiser extends Vue {
 
     const drawGraph = () => {
       const dpr = window.devicePixelRatio || 1;
-      const padding = 90;
+      const padding = 120;
       this.canvas.width = this.canvas.offsetWidth * dpr;
       this.canvas.height = (this.canvas.offsetHeight + padding * 2) * dpr;
       this.canvasCtx.scale(dpr, dpr);
@@ -92,12 +90,12 @@ export default class Visualiser extends Vue {
       for (let i = 0; i < this.normalizedData.length; i++) {
         const x = width * i;
         let height =
-          this.normalizedData[i] * this.canvas.offsetHeight - padding/2;
+          this.normalizedData[i] * this.canvas.offsetHeight - padding / 2;
         if (height < 0) {
           height *= -1;
         }
         if (height > this.canvas.offsetHeight / 2) {
-          height = this.normalizedData.length - padding/2;
+          height = this.normalizedData.length - padding / 2;
         }
         drawLineSegment(this.canvasCtx, x, height, width, (i + 1) % 2 == 0);
       }

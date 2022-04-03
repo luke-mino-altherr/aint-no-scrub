@@ -1,15 +1,19 @@
 <template>
-  <svg xmlns="http://www.w3.org/2000/svg" :class="$props.class" :viewBox="`0 0 ${width} ${height}`">
-    <path fill="currentColor" :d="svgPath"/>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    :class="$props.class"
+    :viewBox="`0 0 ${width} ${height}`"
+  >
+    <path fill="currentColor" :d="svgPath" />
   </svg>
 </template>
 
 <script>
-import { defineComponent, computed } from 'vue'
-import { findIconDefinition } from '@fortawesome/fontawesome-svg-core'
+import { defineComponent, computed } from "vue";
+import { findIconDefinition } from "@fortawesome/fontawesome-svg-core";
 
 export default defineComponent({
-  name: 'FontAwesomeIcon',
+  name: "FontAwesomeIcon",
 
   props: {
     icon: {
@@ -19,20 +23,22 @@ export default defineComponent({
     class: String
   },
 
-  setup (props) {
-    const definition = computed(() => findIconDefinition({
-      prefix: 'fa',
-      iconName: props.icon
-    }))
+  setup(props) {
+    const definition = computed(() =>
+      findIconDefinition({
+        prefix: "fa",
+        iconName: props.icon
+      })
+    );
 
     console.log(definition);
-    console.log(props)
+    console.log(props);
 
-    const width = computed(() => definition.value.icon[0])
-    const height = computed(() => definition.value.icon[1])
-    const svgPath = computed(() => definition.value.icon[4])
+    const width = computed(() => definition.value.icon[0]);
+    const height = computed(() => definition.value.icon[1]);
+    const svgPath = computed(() => definition.value.icon[4]);
 
-    return { width, height, svgPath }
+    return { width, height, svgPath };
   }
-})
+});
 </script>

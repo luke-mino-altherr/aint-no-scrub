@@ -1,16 +1,15 @@
-const colors = require('tailwindcss/colors')
+const colors = require("tailwindcss/colors");
 
 module.exports = {
   purge: [],
-  darkMode: 'class', // or 'media' or 'class'
+  darkMode: "class", // or 'media' or 'class'
   theme: {
     fontSize: {
-      xs: ['.5rem', '.7rem'],
-      sm: ['.75rem', '1rem'],
-      xl: ['1.5rem', '2rem'],
-      xxl: ['2rem', '2rem'],
-      xxl: ['4rem', '4rem'],
-      xxxxl: ['6rem', '6rem'],
+      xs: [".5rem", ".7rem"],
+      sm: [".75rem", "1rem"],
+      xl: ["1.5rem", "2rem"],
+      xxl: ["4rem", "4rem"],
+      xxxxl: ["6rem", "6rem"]
     },
     colors: {
       gray: colors.coolGray,
@@ -19,17 +18,15 @@ module.exports = {
       black: colors.warmGray
     },
     fontFamily: {
-      header: ['Staatliches'],
-      body: ['Lato', 'sans-serif'],
+      header: ["Staatliches"],
+      body: ["Lato", "sans-serif"]
     },
-    extend: {},
+    extend: {}
   },
   variants: {
     extend: {
-      opacity: ['disabled'],
-    },
+      opacity: ["disabled"]
+    }
   },
-  plugins: [
-    require('@tailwindcss/typography'),
-  ],
-}
+  plugins: [require("@tailwindcss/typography")]
+};

@@ -19,8 +19,6 @@ div.border.bg-opacity-100.bg-gray-700.transport.p-4
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { CanvasHTMLAttributes } from "vue";
-import { Watch } from "vue-property-decorator";
 
 @Options({
   props: {
@@ -28,8 +26,8 @@ import { Watch } from "vue-property-decorator";
     audioContext: AudioContext,
     audioBuffer: AudioBuffer,
     playing: Boolean,
-    loaded: Boolean,
-  },
+    loaded: Boolean
+  }
 })
 export default class Transport extends Vue {
   audioContext!: AudioContext;
@@ -42,7 +40,7 @@ export default class Transport extends Vue {
   }
 
   get duration() {
-    return this.loaded ? this.audioBuffer.duration : 0;
+    return this.loaded ? Math.round(this.audioBuffer.duration * 100) / 100 : 0;
   }
 
   get sampleDuration() {
@@ -68,24 +66,24 @@ export default class Transport extends Vue {
   color: white;
 }
 .flex-list {
-    position: relative;
-    margin: 0.3em;
-    overflow: hidden;
-    vertical-align: middle;
+  position: relative;
+  margin: 0.3em;
+  overflow: hidden;
+  vertical-align: middle;
 }
 .flex-list ul {
-/*     display: flex;
+  /*     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
     justify-content: space-between; */
-    margin-left: -1px;
+  margin-left: -1px;
 }
 .flex-list li {
-/*     flex-basis: auto; */
-   text-align: right;
+  /*     flex-basis: auto; */
+  text-align: right;
 }
 .flex-item {
   display: flex;
-  flex-direction: row
+  flex-direction: row;
 }
 </style>

@@ -1,10 +1,16 @@
 <template lang="pug">
 div.h-screen
   div(v-if="!loaded")
-    p Loading...
+    h1.title (Ain't No) Scrub
+    div.px-4
+      Upload(
+        v-model="url"
+      )
+      p.my-4.text-center or
+      Record(v-model="url")
   div(v-else)
     div.main
-      h1.pt-8.pb-10.pr-4.text-xxxxl.text-right (Ain't No) Scrub
+      h1.title (Ain't No) Scrub
       div
         Visualiser(
           :audioContext="audioContext",
@@ -13,7 +19,7 @@ div.h-screen
           :loaded="loaded"
         )
       div.m-4.text-center.rounded.border.bg-gray-500
-        h2.p-4.text-xxl.text-gray-300.text-left Mixer
+        h2.p-4.text-xxl.text-gray-300.text-left.text-shadow-md Mixer
         div
           .pt-4
             AudioTrack(
@@ -39,14 +45,13 @@ div.h-screen
       )
 </template>
 
-
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { spectrogram } from "spectrogram";
-import { CanvasHTMLAttributes } from "vue";
 import AudioTrack from "./AudioTrack.vue";
 import Visualiser from "./Visualiser.vue";
 import Transport from "./Transport.vue";
+import Upload from "./Upload.vue";
+import Record from "./Record.vue";
 import { Watch } from "vue-property-decorator";
 
 @Options({
@@ -54,16 +59,17 @@ import { Watch } from "vue-property-decorator";
   components: {
     AudioTrack,
     Visualiser,
-    Transport
-  },
+    Transport,
+    Upload,
+    Record
+  }
 })
 export default class Main extends Vue {
   audioContext = new AudioContext();
   trackCount = 1;
   rawBuffer!: AudioBuffer;
 
-  url =
-    "https://f002.backblazeb2.com/file/mino-altherr-public/blog/audio/sailure-to-sun.mp3";
+  url = "";
   playing = false;
   stop = 0;
   loaded = false;
@@ -74,28 +80,21 @@ export default class Main extends Vue {
     "#C9FFD9",
     "#FFFECB",
     "#FFCED0",
-    "#FFBAE4",
-  ]
+    "#FFBAE4"
+  ];
 
-  colorMap = [
-    "#F400FF",
-    "#6F00EF",
-    "#007FFF",
-    "#77FB00",
-    "#FEFF00",
-    "#FAAB00",
-  ]
+  colorMap = ["#F400FF", "#6F00EF", "#007FFF", "#77FB00", "#FEFF00", "#FAAB00"];
 
-
-  mounted() {
+  @Watch("url")
+  loadAudioFile(url: string) {
     const request = new XMLHttpRequest();
-    request.open("GET", this.url, true);
+    request.open("GET", url, true);
     request.responseType = "arraybuffer";
 
     request.onload = () => {
       this.audioContext.decodeAudioData(
         request.response,
-        (buffer) => {
+        buffer => {
           this.rawBuffer = buffer;
           this.loaded = true;
           console.log(this.rawBuffer);
@@ -104,7 +103,6 @@ export default class Main extends Vue {
       );
     };
     request.send();
-
   }
 
   onPlay() {
@@ -117,7 +115,7 @@ export default class Main extends Vue {
   }
 
   onTrackAdd() {
-    this.trackCount += 1
+    this.trackCount += 1;
   }
 }
 </script>
